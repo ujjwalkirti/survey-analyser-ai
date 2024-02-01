@@ -9,11 +9,39 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
 from pathlib import Path
+import environ
+import os
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+if os.environ['DJANGO_SERVER_TYPE'] == 'local':
+    try:
+        environ.Env.read_env(os.path.join(BASE_DIR, '.env.local'))
+    except:
+        pass
+
+if os.environ['DJANGO_SERVER_TYPE'] == 'production':
+    try:
+        environ.Env.read_env(os.path.join(BASE_DIR, '.env.production'))
+    except:
+        pass
+
+
+if os.environ['DJANGO_SERVER_TYPE'] == 'testing':
+    try:
+        environ.Env.read_env(os.path.join(BASE_DIR, '.env.testing'))
+    except:
+        pass
+
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +53,7 @@ SECRET_KEY = "django-insecure-7c+@4-^_aw#d@=hq+j@rk#$kezrmb1%k0rmlo3pf0l$8pe!00b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,6 +65,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'frontend',
+    'ai_analysis'
 ]
 
 MIDDLEWARE = [
@@ -75,12 +105,12 @@ WSGI_APPLICATION = "survey_analysis_ai.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_survey_analysis',
-        'USER': 'myporjectuser',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT'),
     }
 }
 
@@ -121,7 +151,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = 'frontend.User'
