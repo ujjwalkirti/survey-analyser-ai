@@ -1,9 +1,15 @@
 from django import forms
 
+from frontend.models.Questionaire import Questionaire
 
-class QuestionaireForm(forms.Form):
-    questionaire_title = forms.CharField(max_length=200, label="Questionaire Title")
-    questionaire_description = forms.Textarea()
-    questionaire_published_status = forms.BooleanField(
-        label="Do you want to publish the questionaire?", required=False
-    )
+
+class QuestionaireForm(forms.ModelForm):
+    class Meta:
+        model = Questionaire
+        fields = ["title", "author", "is_published", "description"]
+        labels = {
+            "title": "Questionaire Title",
+            "author": "Author",
+            "is_published": "Do you want to publish the questionaire?",
+            "description": "Questionaire Description",
+        }

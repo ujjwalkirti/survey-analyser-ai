@@ -6,6 +6,11 @@
     <title>{{ title }}</title>
 </head>
 <body>
+    {% for questionaire in questionaires %}
 
+        <h2>{{ questionaire.title }}</h2>
+        <p>{{ questionaire.description }}</p>
+        <a href={% url 'questionaire_page' questionaire.id %}>View Questions</a>
+    {% endfor %}
 </body>
 </html>
