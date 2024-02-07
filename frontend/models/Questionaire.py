@@ -7,6 +7,7 @@ class Questionaire(models.Model):
     title = models.TextField()
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_published = models.BooleanField(default=False)
+    description = models.TextField()
     pub_date = models.DateTimeField('date published')
 
     def __str__(self):
